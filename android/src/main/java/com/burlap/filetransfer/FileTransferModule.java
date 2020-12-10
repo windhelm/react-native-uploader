@@ -115,7 +115,7 @@ public class FileTransferModule extends ReactContextBaseJavaModule {
           if(file.hasKey("name")){
             name = file.getString("name");
           }
-          
+
 
           mRequestBody.addFormDataPart(name, fileName, RequestBody.create(mediaType, imageFile));
         }
@@ -124,7 +124,7 @@ public class FileTransferModule extends ReactContextBaseJavaModule {
 
 
         MultipartBody requestBody = mRequestBody.build();
-      
+
         CountingRequestBody monitoredRequest = new CountingRequestBody(requestBody, new CountingRequestBody.Listener() {
           @Override
           public void onRequestProgress(long bytesWritten, long contentLength) {
@@ -138,9 +138,12 @@ public class FileTransferModule extends ReactContextBaseJavaModule {
                     .emit("RNUploaderProgress", params);
           }
         });
-      
+
+        String token = options.getString("token");
+
         Request request = new Request.Builder()
                 .header("Accept", "application/json")
+                .header("Authorization", "Bearer " + token)
                 .url(url)
                 .post(monitoredRequest)
                 .build();
